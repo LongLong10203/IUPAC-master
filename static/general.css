@@ -1,0 +1,23 @@
+body {
+    background-color: #212121;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.box {
+    color: #0000;
+    font-family: sans-serif;
+    font-size: 30px;
+    font-weight: bold;
+    background: 
+      repeating-radial-gradient(#000 0 0.0001%,#fff 0 0.0002%) 50% 0/2500px 2500px,
+      repeating-conic-gradient(#000 0 0.0001%,#fff 0 0.0002%) 50% 50%/2500px 2500px;
+    background-blend-mode: difference;
+    mix-blend-mode: lighten;
+    -webkit-background-clip: text;
+            background-clip: text;
+}

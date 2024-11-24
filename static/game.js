@@ -1,6 +1,13 @@
 let score = 0, incorrect = false
 
 function reset() {
+    document.getElementById("img").style.display = "none"
+    document.getElementById("loader").style.display = "block"
+    document.getElementById("answer").value = ""
+    document.getElementById("answer").disabled = false
+    document.getElementById("next").style.display = "none"
+    document.getElementById("next").disabled = false
+    document.getElementById("result").innerText = ""
     fetch("/random_compound")
         .then(response => response.json())
         .then(data => {
@@ -11,11 +18,8 @@ function reset() {
             console.error(err)
         })
         .then(() => {
-            document.getElementById("answer").value = ""
-            document.getElementById("answer").disabled = false
-            document.getElementById("next").style.display = "none"
-            document.getElementById("next").disabled = false
-            document.getElementById("result").innerText = ""
+            document.getElementById("img").style.display = "block"
+            document.getElementById("loader").style.display = "none"
         })
 }
 
@@ -39,7 +43,7 @@ document.getElementById("answer").addEventListener("keydown", (event) => {
                     document.getElementById("result").innerHTML = "Correct!"
                     ++score
                 } else {
-                    document.getElementById("result").innerHTML = "Incorrect... The answer is " + sessionStorage.getItem("answer")
+                    document.getElementById("result").innerHTML = "Incorrect... The answer is: " + sessionStorage.getItem("answer")
                     incorrect = true
                 }
                 update()
@@ -60,12 +64,11 @@ document.getElementById("next").addEventListener("click", () => {
     if (incorrect) {
         validscore().then(valid => {
             if (valid) {
-                
+                // TODO: update database
             } else {
                 alert("You definitely cheated, right?")
             }
         })
-        // TODO: update database
         window.location.href = "/game/result"
     } else {
         document.getElementById("next").disabled = true
