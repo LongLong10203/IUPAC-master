@@ -10,7 +10,7 @@ from PIL import Image
 def random_smiles() -> str:
     smiles = "C"
 
-    for _ in range(random.randint(1, 6)):
+    for _ in range(random.randint(1, 5)):
         rnd = random.randint(1, 4)
 
         # functional group
@@ -38,13 +38,15 @@ def random_smiles() -> str:
         else:
             smiles += "C"
 
-    # 1/4 probability -oic group in front
-    if random.randint(1, 4) == 1:
-        smiles = "OC(=O)" + smiles
-    
-    # 1/4 probability -oic group at back
-    if random.randint(1, 4) == 1:
-        smiles += "C(=O)O"
+    # hydroxyl group should not collapse with carboxyl group (out-syl)
+    if "C(O)" not in smiles:
+        # 1/4 probability -oic group in front
+        if random.randint(1, 4) == 1:
+            smiles = "OC(=O)" + smiles
+        
+        # 1/4 probability -oic group at back
+        if random.randint(1, 4) == 1:
+            smiles += "C(=O)O"
 
     # i have no idea how SMILES work
     if valid(smiles):
