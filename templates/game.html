@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>IUPAC Master</title>
+        <script src="{{ url_for('static', filename='game.js') }}" defer></script>
+    </head>
+    <body>
+        <p>Score: <span id="score"></span></p>
+        <img src="" alt="generated organic compound image" id="img"><br>
+        <label for="answer">What is the IUPAC name of the compound above?</label><br>
+        <input type="text" name="answer" id="answer">
+        <input type="button" id="next" value="Next" style="display: none"><br>
+        <p id="result"></p>
+    </body>
+</html>
