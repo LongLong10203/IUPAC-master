@@ -1,92 +1,73 @@
-import random
-from rdkit import Chem
-from rdkit.Chem import Draw
-from pubchempy import get_compounds
+from flask import Flask, render_template, request, make_response, redirect, jsonify, session
+from ext_chem import *
+from uuid import uuid4
 
-import io
-import base64
-from PIL import Image
+app = Flask(__name__)
+app.secret_key = uuid4().hex
 
-def random_smiles() -> str:
-    smiles = "C"
+@app.route("/")
+def home():
+    username = request.cookies.get("username")
+    if username is None:
+        return redirect("/login")
+    return render_template("home.html", username=username)
 
-    for _ in range(random.randint(1, 5)):
-        rnd = random.randint(1, 4)
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.cookies.get("username") is not None:
+        return redirect("/")
+    if request.method == "POST":
+        username = request.form.get("username")
+        response = make_response(redirect("/"))
+        response.set_cookie("username", username)
+        return response
+    return render_template("/login.html")
 
-        # functional group
-        if rnd == 1:
-            rnd2 = random.randint(1, 2)
-            if rnd2 == 1: # -ene
-                smiles += "C=C"
-            elif rnd2 == 2: # -ol
-                smiles += "C(O)"
-        
-        # halogen
-        elif rnd == 2:
-            rnd2 = random.randint(1, 5)
-            if rnd2 == 1:
-                smiles += "(Br)"
-            elif rnd2 == 2:
-                smiles += "(Cl)"
-            elif rnd2 == 3:
-                smiles += "(F)"
-            elif rnd2 == 4:
-                smiles += "(C)"
-            else:
-                smiles += "(CC)"
+@app.route("/game/getscore")
+def get_score():
+    return jsonify(score=session["score"])
 
-        else:
-            smiles += "C"
+@app.route("/game/check/<user_answer>")
+def check(user_answer: str):
+    # print(user_answer, session["answer"])
 
-    # hydroxyl group should not collapse with carboxyl group (out-syl)
-    if "C(O)" not in smiles:
-        # 1/4 probability -oic group in front
-        if random.randint(1, 4) == 1:
-            smiles = "OC(=O)" + smiles
-        
-        # 1/4 probability -oic group at back
-        if random.randint(1, 4) == 1:
-            smiles += "C(=O)O"
+    if session["answered"]:
+        return jsonify(correct=False, cheated=True)
 
-    # i have no idea how SMILES work
-    if valid(smiles):
-        return smiles
-    else:
-        return random_smiles()
+    if user_answer == session["answer"]:
+        session["score"] += 1
+    session["answered"] = True
+    return jsonify(correct=bool(user_answer == session["answer"]))
 
-def iupac_name(smiles: str) -> str:
-    compounds = get_compounds(smiles, namespace="smiles")
-    if compounds:
-        return compounds[0].iupac_name
-    else:
-        return None
+@app.route("/game")
+def game():
+    session["answered"] = False
+    session["score"] = 0
+    session["answer"] = None
+    return render_template("/game.html")
 
-def valid(smiles: str):
-    return iupac_name(smiles) is not None and Chem.MolFromSmiles(smiles) is not None
+@app.route("/game/result")
+def game_result():
+    return render_template("/result.html")
 
-def generate_image(smiles: str) -> Image.Image:
-    return Draw.MolToImage(Chem.MolFromSmiles(smiles))
+@app.route("/random_compound")
+def random_compound():
+    smiles = random_smiles()
+    iupac = iupac_name(smiles)
+    img_base64 = generate_base64_image(smiles)
+    session["answer"] = iupac
+    session["answered"] = False
+    return jsonify(smiles=smiles, iupac=iupac, img_base64=img_base64)
 
-def image_to_base64(image: Image.Image) -> str:
-    img_byte_arr = io.BytesIO()
-    image.save(img_byte_arr, format="PNG")
-    img_byte_arr = img_byte_arr.getvalue()
-    img_base64 = base64.b64encode(img_byte_arr).decode("utf-8")
-    return img_base64
+@app.route("/scoreboard")
+def scoreboard():
+    return render_template("/scoreboard.html")
 
-def generate_base64_image(smiles: str) -> str:
-    return image_to_base64(generate_image(smiles))
+@app.route("/logout")
+def logout():
+    response = make_response(redirect("/login"))
+    response.delete_cookie("username")
+    return response
 
-class OrganicCompound:
-    def __init__(self):
-        self.smiles = random_smiles()
-        self.iupac = iupac_name(self.smiles)
-        self.img = generate_image(self.smiles)
-        self.img_base64 = image_to_base64(self.img)
-
-# DEBUG
 if __name__ == "__main__":
-    compound = OrganicCompound()
-    print(compound.smiles)
-    print(compound.iupac)
-    compound.img.show()
+    app.run(host="0.0.0.0", port=3016, debug=True)
