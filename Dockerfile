@@ -14,8 +14,8 @@ RUN prisma generate
 # Expose the port your app runs on
 EXPOSE 3016
 
-RUN chmod +x /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+RUN chmod +x ./entrypoint.sh
+ENTRYPOINT ["./entrypoint.sh"]
 
 # Run the Flask application
 CMD ["python", "main.py"]
