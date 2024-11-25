@@ -14,5 +14,10 @@ A website that helps you learn IUPAC naming, designed for everyone.
 - [Flask](https://flask.palletsprojects.com/): A lightweight WSGI web application framework in Python.
 - [Jinja](https://jinja.palletsprojects.com/): A template engine for Python.
 
+## Special thanks to
+- Ms. Cheung for teaching me chemistry (although I fail in chemistry).
+- My friend [Jay](https://github.com/Agent-01) for hosting the website.
+- [UIverse](https://uiverse.io/) for the wonderful UI designs.
+
 ## License
 [MIT License](https://en.wikipedia.org/wiki/MIT_License)
