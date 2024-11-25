@@ -6,7 +6,7 @@ A website that helps you learn [IUPAC naming](https://en.wikipedia.org/wiki/IUPA
 1. Click in the [link](https://iupac-master.xagentx.link).
 2. Enter your name, the website will automatically log you in by [cookies](https://en.wikipedia.org/wiki/HTTP_cookie).
 3. Click the `NEW GAME` button.
-4. A random organic compound will be generated. Enter the IUPAC name of the compound.
+4. A random organic compound will be generated. Enter the IUPAC name of the compound. Submit by pressing `Enter`.
 5. Click `Next` to continue. If you get it right, your score will be increased. If you get it wrong, you will be redirected to the result page.
 6. Compete with your friends and see who can get the highest score!
 
@@ -22,8 +22,9 @@ Please do NOT attempt to cheat. Cheating deprives you of the opportunity to lear
 - **[PostgreSQL](https://www.postgresql.org/):** A robust, open-source object-relational database system, compatible with Prisma for database management.
 
 ## Special Thanks to
-- Ms. Cheung for teaching me chemistry (although I fail in chemistry).
-- My friend [Jay](https://github.com/Agent-01) for hosting the website.
+- Ms. Cheung for teaching me chemistry (although I'm failing).
+- My friend [Jay](https://github.com/Agent-01) for hosting the website with his server.
+- [Coolify](https://coolify.io/) for the cloud service.
 - [UIverse](https://uiverse.io/) for the wonderful UI designs.
 
 ## License

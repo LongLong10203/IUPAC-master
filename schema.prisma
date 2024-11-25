@@ -12,5 +12,6 @@ generator client {
 model User {
     id Int @id @default(autoincrement())
     username String @unique
+    password String
     max_score Int @default(0)
 }
