@@ -1,0 +1,18 @@
+# IUPAC Master
+
+A website that helps you learn IUPAC naming, designed for everyone.
+
+## How to play
+1. Click in the [link](https://iupac-master.xagentx.link/login).
+2. Enter your name, the website will automatically log you in by [cookies](https://en.wikipedia.org/wiki/HTTP_cookie).
+3. Click the `Play` button.
+4. A random organic compound will be generated. Enter the IUPAC name of the compound.
+5. Click `Next` to continue. If you get it right, your score will be increased. If you get it wrong, you will be redirected to the result page.
+6. Compete with your friends and see who can get the highest score!
+
+## Technologies used
+- [Flask](https://flask.palletsprojects.com/): A lightweight WSGI web application framework in Python.
+- [Jinja](https://jinja.palletsprojects.com/): A template engine for Python.
+
+## License
+[MIT License](https://en.wikipedia.org/wiki/MIT_License)
