@@ -3,7 +3,7 @@
 A website that helps you learn IUPAC naming, designed for everyone.
 
 ## How to play
-1. Click in the [link](https://iupac-master.xagentx.link/login).
+1. Click in the [link](https://iupac-master.xagentx.link/).
 2. Enter your name, the website will automatically log you in by [cookies](https://en.wikipedia.org/wiki/HTTP_cookie).
 3. Click the `Play` button.
 4. A random organic compound will be generated. Enter the IUPAC name of the compound.
