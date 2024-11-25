@@ -1,0 +1,10 @@
+services:
+  iupac-master:
+    build: .
+    image: iupac-master:latest
+    container_name: iupac-master
+    restart: unless-stopped
+    ports:
+      - 3016:3016
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
