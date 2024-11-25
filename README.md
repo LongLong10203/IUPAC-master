@@ -3,8 +3,8 @@
 A website that helps you learn [IUPAC naming](https://en.wikipedia.org/wiki/IUPAC_nomenclature_of_organic_chemistry), designed for everyone.
 
 ## How to Play
-1. Click in the [link](https://iupac-master.xagentx.link).
-2. Enter your name, the website will automatically log you in by [cookies](https://en.wikipedia.org/wiki/HTTP_cookie).
+1. Click on the [link](https://iupac-master.xagentx.link).
+2. Enter your name and password, the website will automatically log you in by [cookies](https://en.wikipedia.org/wiki/HTTP_cookie).
 3. Click the `NEW GAME` button.
 4. A random organic compound will be generated. Enter the IUPAC name of the compound. Submit by pressing `Enter`.
 5. Click `Next` to continue. If you get it right, your score will be increased. If you get it wrong, you will be redirected to the result page.
@@ -32,9 +32,9 @@ Please do NOT attempt to cheat. Cheating deprives you of the opportunity to lear
 
 ## Update Patch
 - 24/11/2024: Demo release
-- 25/11/2024:
+- 25/11/2024: Alpha version release
     - Secured data transmission
     - Added scoreboard page
-    - Added database to store users' maximum scores
+    - Set up database to store users' password and maximum scores
     - Improved UI designs
 - 26/11/2024: Official release
