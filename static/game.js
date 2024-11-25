@@ -5,7 +5,6 @@ function reset() {
     document.getElementById("loader").style.display = "block"
     document.getElementById("answer").value = ""
     document.getElementById("next").style.display = "none"
-    document.getElementById("next").disabled = false
     document.getElementById("result").innerText = ""
     fetch("/random_compound")
         .then(response => response.json())
@@ -56,9 +55,9 @@ function validscore() {
     return fetch("/game/getscore")
         .then(res => res.json())
         .then(data => {
-            console.log(data);
-            return data.score === score;
-        });
+            console.log(data)
+            return data.score === score
+        })
 }
 
 document.getElementById("next").addEventListener("click", () => {
@@ -72,7 +71,6 @@ document.getElementById("next").addEventListener("click", () => {
             }
         })
     } else {
-        document.getElementById("next").disabled = true
         reset()
     }
 })
