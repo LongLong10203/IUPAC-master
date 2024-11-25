@@ -10,6 +10,9 @@ A website that helps you learn IUPAC naming, designed for everyone.
 5. Click `Next` to continue. If you get it right, your score will be increased. If you get it wrong, you will be redirected to the result page.
 6. Compete with your friends and see who can get the highest score!
 
+## Important Note
+Please do NOT attempt to cheat. Cheating deprives you of the opportunity to learn and understand IUPAC naming, which is the goal of this game. Let's play fair and have fun!
+
 ## Technologies used
 - [Flask](https://flask.palletsprojects.com/): A lightweight WSGI web application framework in Python.
 - [Jinja](https://jinja.palletsprojects.com/): A template engine for Python.

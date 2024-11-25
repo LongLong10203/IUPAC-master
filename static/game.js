@@ -4,7 +4,6 @@ function reset() {
     document.getElementById("img").style.display = "none"
     document.getElementById("loader").style.display = "block"
     document.getElementById("answer").value = ""
-    document.getElementById("answer").disabled = false
     document.getElementById("next").style.display = "none"
     document.getElementById("next").disabled = false
     document.getElementById("result").innerText = ""
@@ -12,7 +11,6 @@ function reset() {
         .then(response => response.json())
         .then(data => {
             document.getElementById("img").src = "data:image/png;base64," + data.img_base64
-            sessionStorage.setItem("answer", data.iupac)
         })
         .catch(err => {
             console.error(err)
@@ -20,6 +18,7 @@ function reset() {
         .then(() => {
             document.getElementById("img").style.display = "block"
             document.getElementById("loader").style.display = "none"
+            document.getElementById("answer").disabled = false
         })
 }
 
@@ -39,11 +38,13 @@ document.getElementById("answer").addEventListener("keydown", (event) => {
             .then(data => {
                 document.getElementById("answer").disabled = true
                 document.getElementById("next").style.display = "block"
-                if (data.correct) {
+                if (data.cheated) {
+                    document.getElementById("result").innerHTML = "You cheated, right?"
+                } else if (data.correct) {
                     document.getElementById("result").innerHTML = "Correct!"
                     ++score
                 } else {
-                    document.getElementById("result").innerHTML = "Incorrect... The answer is: " + sessionStorage.getItem("answer")
+                    document.getElementById("result").innerHTML = "Incorrect... The answer is: " + data.answer
                     incorrect = true
                 }
                 update()
@@ -64,12 +65,12 @@ document.getElementById("next").addEventListener("click", () => {
     if (incorrect) {
         validscore().then(valid => {
             if (valid) {
-                // TODO: update database
+                window.location.href = "/game/result"
             } else {
-                alert("You definitely cheated, right?")
+                alert("You cheated, right?")
+                window.location.href = "/"
             }
         })
-        window.location.href = "/game/result"
     } else {
         document.getElementById("next").disabled = true
         reset()

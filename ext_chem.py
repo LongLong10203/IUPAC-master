@@ -1,7 +1,7 @@
 import random
 from rdkit import Chem
 from rdkit.Chem import Draw
-from pubchempy import get_compounds
+from pubchempy import get_compounds, PubChemPyError
 
 import io
 import base64
@@ -55,14 +55,18 @@ def random_smiles() -> str:
         return random_smiles()
 
 def iupac_name(smiles: str) -> str:
-    compounds = get_compounds(smiles, namespace="smiles")
-    if compounds:
-        return compounds[0].iupac_name
-    else:
+    try:
+        compounds = get_compounds(smiles, namespace="smiles")
+        if compounds:
+            return compounds[0].iupac_name.replace("(", "").replace(")", "") # to prevent something like dibromo(chloro)methane
+        else:
+            return None
+    except PubChemPyError as e:
+        print(e)
         return None
 
 def valid(smiles: str):
-    return iupac_name(smiles) is not None and Chem.MolFromSmiles(smiles) is not None
+    return Chem.MolFromSmiles(smiles) is not None and iupac_name(smiles) is not None
 
 def generate_image(smiles: str) -> Image.Image:
     return Draw.MolToImage(Chem.MolFromSmiles(smiles))
@@ -86,7 +90,8 @@ class OrganicCompound:
 
 # DEBUG
 if __name__ == "__main__":
-    compound = OrganicCompound()
-    print(compound.smiles)
-    print(compound.iupac)
-    compound.img.show()
+    # compound = OrganicCompound()
+    # print(compound.smiles)
+    # print(compound.iupac)
+    # compound.img.show()
+    iupac_name("idk")

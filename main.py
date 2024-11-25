@@ -1,9 +1,12 @@
 from flask import Flask, render_template, request, make_response, redirect, jsonify, session
 from ext_chem import *
 from uuid import uuid4
+from prisma import Prisma
 
 app = Flask(__name__)
 app.secret_key = uuid4().hex
+
+prisma = Prisma()
 
 @app.route("/")
 def home():
@@ -13,11 +16,24 @@ def home():
     return render_template("home.html", username=username)
 
 @app.route("/login", methods=["GET", "POST"])
-def login():
+async def login():
     if request.cookies.get("username") is not None:
         return redirect("/")
     if request.method == "POST":
         username = request.form.get("username")
+        await prisma.connect()
+        await prisma.user.upsert(
+            where={
+                "username": username
+            },
+            data={
+                "update": {},
+                "create": {
+                    "username": username
+                }
+            }
+        )
+        await prisma.disconnect()
         response = make_response(redirect("/"))
         response.set_cookie("username", username)
         return response
@@ -36,8 +52,9 @@ def check(user_answer: str):
 
     if user_answer == session["answer"]:
         session["score"] += 1
+
     session["answered"] = True
-    return jsonify(correct=bool(user_answer == session["answer"]))
+    return jsonify(correct=bool(user_answer == session["answer"]), cheated=False, answer=session["answer"])
 
 @app.route("/game")
 def game():
@@ -47,8 +64,20 @@ def game():
     return render_template("/game.html")
 
 @app.route("/game/result")
-def game_result():
-    return render_template("/result.html")
+async def game_result():
+    username = request.cookies.get("username")
+    await prisma.connect()
+    user = await prisma.user.find_first(
+        where={"username": username}
+    )
+    new_high_score = session["score"] > user.max_score
+    if new_high_score:
+        await prisma.user.update(
+            where={"username": username},
+            data={"max_score": session["score"]}
+        )
+    await prisma.disconnect()
+    return render_template("/result.html", new_high_score=new_high_score)
 
 @app.route("/random_compound")
 def random_compound():
@@ -60,8 +89,13 @@ def random_compound():
     return jsonify(smiles=smiles, iupac=iupac, img_base64=img_base64)
 
 @app.route("/scoreboard")
-def scoreboard():
-    return render_template("/scoreboard.html")
+async def scoreboard():
+    await prisma.connect()
+    users = await prisma.user.find_many(
+        order={"max_score": "desc"}
+    )
+    await prisma.disconnect()
+    return render_template("/scoreboard.html", users=users)
 
 @app.route("/logout")
 def logout():
