@@ -10,7 +10,6 @@ COPY . .
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 RUN prisma generate
-RUN prisma db push
 
 # Expose the port your app runs on
 EXPOSE 3016
