@@ -40,7 +40,7 @@ async def login_password():
         return redirect("/login")
     
     await prisma.connect()
-    user = await prisma.user.find_first(
+    user = await prisma.user.find_unique(
         where={
             "username": username
         }
@@ -99,7 +99,7 @@ async def game_result():
     username = request.cookies.get("username")
 
     await prisma.connect()
-    user = await prisma.user.find_first(
+    user = await prisma.user.find_unique(
         where={"username": username}
     )
     new_high_score = session["score"] > user.max_score
@@ -147,4 +147,4 @@ async def delete_account():
     return make_response(redirect("/logout"))
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=3016, debug=True)
+    app.run(host="0.0.0.0", port=3016, debug=False)
