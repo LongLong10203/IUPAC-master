@@ -1,8 +1,11 @@
 /* From Uiverse.io by 0xnihilism */ 
 .input__container {
-    position: absolute;
+    /* position: absolute;
     top: 40%;
-    left: 40%;
+    left: 40%; */
+    max-width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
     transform: translate(-50%, -50%);
     background: #f0f0f0;
     padding: 20px;
