@@ -32,7 +32,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
 document.getElementById("answer").addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
-        fetch(`/game/check/${document.getElementById("answer").value.trim()}`)
+        fetch(`/game/check/${document.getElementById("answer").value.trim().toLowerCase()}`)
             .then(res => res.json())
             .then(data => {
                 document.getElementById("answer").disabled = true
