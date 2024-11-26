@@ -37,4 +37,6 @@ Please do NOT attempt to cheat. Cheating deprives you of the opportunity to lear
     - Added scoreboard page
     - Set up database to store users' password and maximum scores
     - Improved UI designs
-- 26/11/2024: Official release
+- 26/11/2024: Beta version release
+    - Bug fix
+- 27/11/2024: Official release
