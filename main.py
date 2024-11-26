@@ -11,6 +11,14 @@ app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
 
 prisma = Prisma()
 
+async def connect():
+    if not prisma.is_connected():
+        await prisma.connect()
+
+async def disconnect():
+    if prisma.is_connected():
+        await prisma.disconnect()
+
 @app.route("/")
 def home():
     if request.cookies.get("logged_in") is None:
@@ -39,26 +47,26 @@ async def login_password():
     if username is None: # user directly jumps to this page instead of going through the /login page
         return redirect("/login")
     
-    await prisma.connect()
+    await connect()
     user = await prisma.user.find_unique(
         where={
             "username": username
         }
     )
-    await prisma.disconnect()
+    await disconnect()
 
     if request.method == "POST":
         password = request.form.get("password")
 
         if user is None:
-            await prisma.connect()
+            await connect()
             await prisma.user.create(
                 data={
                     "username": username,
                     "password": bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
                 }
             )
-            await prisma.disconnect()
+            await disconnect()
         else: # user already exists
             # check password
             if not bcrypt.checkpw(password.encode("utf-8"), user.password.encode("utf-8")):
@@ -98,17 +106,19 @@ def game():
 async def game_result():
     username = request.cookies.get("username")
 
-    await prisma.connect()
+    await connect()
     user = await prisma.user.find_unique(
         where={"username": username}
     )
+    await disconnect()
     new_high_score = session["score"] > user.max_score
     if new_high_score:
+        await connect()
         await prisma.user.update(
             where={"username": username},
             data={"max_score": session["score"]}
         )
-    await prisma.disconnect()
+        await disconnect()
 
     return render_template("/result.html", new_high_score=new_high_score)
 
@@ -123,11 +133,11 @@ def random_compound():
 
 @app.route("/scoreboard")
 async def scoreboard():
-    await prisma.connect()
+    await connect()
     users = await prisma.user.find_many(
         order={"max_score": "desc"}
     )
-    await prisma.disconnect()
+    await disconnect()
     return render_template("/scoreboard.html", users=users, current_user=request.cookies.get("username"))
 
 @app.route("/logout")
@@ -139,11 +149,11 @@ def logout():
 
 @app.route("/account/delete")
 async def delete_account():
-    await prisma.connect()
+    await connect()
     await prisma.user.delete(
         where={"username": request.cookies.get("username")}
     )
-    await prisma.disconnect()
+    await disconnect()
     return make_response(redirect("/logout"))
 
 if __name__ == "__main__":
