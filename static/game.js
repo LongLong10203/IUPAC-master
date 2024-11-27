@@ -1,4 +1,4 @@
-let score = 0, incorrect = false
+let score = 0, incorrect = false, answered = false
 
 function reset() {
     document.getElementById("img").style.display = "none"
@@ -18,6 +18,8 @@ function reset() {
             document.getElementById("img").style.display = "block"
             document.getElementById("loader").style.display = "none"
             document.getElementById("answer").disabled = false
+            document.getElementById("answer").focus()
+            answered = false
         })
 }
 
@@ -47,6 +49,7 @@ document.getElementById("answer").addEventListener("keydown", (event) => {
                     incorrect = true
                 }
                 update()
+                answered = true
             })
     }
 })
@@ -55,12 +58,12 @@ function validscore() {
     return fetch("/game/getscore")
         .then(res => res.json())
         .then(data => {
-            console.log(data)
+            // console.log(data)
             return data.score === score
         })
 }
 
-document.getElementById("next").addEventListener("click", () => {
+function next() {
     if (incorrect) {
         validscore().then(valid => {
             if (valid) {
@@ -72,5 +75,16 @@ document.getElementById("next").addEventListener("click", () => {
         })
     } else {
         reset()
+    }
+}
+
+document.getElementById("next").addEventListener("click", () => {
+    next()
+})
+
+document.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" && answered) {
+        event.preventDefault()
+        next()
     }
 })

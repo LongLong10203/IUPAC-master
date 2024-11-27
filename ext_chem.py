@@ -57,7 +57,7 @@ def random_smiles() -> str:
 def iupac_name(smiles: str) -> str:
     try:
         compounds = get_compounds(smiles, namespace="smiles")
-        if compounds[0]:
+        if compounds[0].iupac_name is not None:
             return compounds[0].iupac_name.replace("(", "").replace(")", "") # to prevent something like dibromo(chloro)methane
         else:
             return None
@@ -94,4 +94,4 @@ if __name__ == "__main__":
     # print(compound.smiles)
     # print(compound.iupac)
     # compound.img.show()
-    iupac_name("idk")
+    print(iupac_name("C(O)(O)C"))

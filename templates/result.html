@@ -13,6 +13,9 @@
         {% else %}
         <div class="box">Score: {{session["score"]}}</div>
         {% endif %}
+        <div class="buttons" onclick="window.location.href='/game'">
+            <button class="btn"><span></span><p data-start="good luck!" data-text="start!" data-title="new game"></p></button>
+        </div>
         <button class="cta" onclick="window.location.href='/'">
         <span class="span">Back to Home</span>
         <span class="second">
@@ -50,8 +53,5 @@
             </svg>
         </span>
         </button>
-        <div class="buttons" onclick="window.location.href='/game'">
-            <button class="btn"><span></span><p data-start="good luck!" data-text="start!" data-title="new game"></p></button>
-        </div>
     </body>
 </html>
