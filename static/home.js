@@ -12,3 +12,7 @@ document.getElementById("acc-del-btn").addEventListener("click", () => {
         window.location.href = "/account/delete"
     }
 })
+
+document.getElementById("github").addEventListener("click", () => {
+    window.open("https://github.com/LongLong10203/IUPAC-master", "_blank")
+})
