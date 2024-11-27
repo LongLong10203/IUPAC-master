@@ -8,45 +8,51 @@ import base64
 from PIL import Image
 
 def random_smiles() -> str:
-    smiles = "C"
+    # meth ~ oct, normal distribution
+    longest_carbon_chain = random.choices([i for i in range(1, 9)], weights=[min([i, 8 - i, 3]) for i in range(1, 9)])[0]
+    smiles = ["C"] * longest_carbon_chain
 
-    for _ in range(random.randint(1, 5)):
-        rnd = random.randint(1, 4)
+    cyclic = False
+    # 1/4 probability cyclic
+    if longest_carbon_chain >= 3 and random.randint(1, 4) == 1:
+        cyclic = True
+        smiles.insert(1, "1")
+        smiles.append("1")
 
-        # functional group
-        if rnd == 1:
-            rnd2 = random.randint(1, 2)
-            if rnd2 == 1: # -ene
-                smiles += "C=C"
-            elif rnd2 == 2: # -ol
-                smiles += "C(O)"
-        
-        # halogen
-        elif rnd == 2:
-            rnd2 = random.randint(1, 5)
-            if rnd2 == 1:
-                smiles += "(Br)"
-            elif rnd2 == 2:
-                smiles += "(Cl)"
-            elif rnd2 == 3:
-                smiles += "(F)"
-            elif rnd2 == 4:
-                smiles += "(C)"
-            else:
-                smiles += "(CC)"
+    # alkene (at least 2 C atoms) 1/3 probability to include
+    if longest_carbon_chain >= 2 and random.randint(1, 3) == 1:
+        no_of_alkenes = random.randint(1, longest_carbon_chain-1)
+        for _ in range(no_of_alkenes):
+            pos = random.randint(0, len(smiles)-2)
+            # check invalid, also lower the probability of more alkenes
+            if smiles[pos] == "=" or smiles[pos+1] == "=":
+                continue
+            # extract the selected atoms
+            first = smiles.pop(pos)
+            second = smiles.pop(pos)
+            # insert alkene group at random places
+            smiles.insert(pos, f"{first}={second}")
 
-        else:
-            smiles += "C"
+    # 0 ~ 4, normal distribution
+    no_of_substituents = random.choices([i for i in range(0, 5)], weights=[min(i, 4 - i) for i in range(0, 5)])[0]
+    substituents = [
+        "Br", "Cl", "F", "C", "CC"
+    ]
+    for _ in range(no_of_substituents):
+        substituent = random.choice(substituents)
+        smiles.insert(random.randint(0 if 1 > longest_carbon_chain-1 else 1, longest_carbon_chain-1), f"({substituent})")
 
-    # hydroxyl group should not collapse with carboxyl group (out-syl)
-    if "C(O)" not in smiles:
-        # 1/4 probability -oic group in front
-        if random.randint(1, 4) == 1:
-            smiles = "OC(=O)" + smiles
-        
-        # 1/4 probability -oic group at back
-        if random.randint(1, 4) == 1:
-            smiles += "C(=O)O"
+    rnd = random.randint(1, 4)
+    # either hydroxyl group or carboxyl group
+    if rnd == 1:
+        smiles.insert(random.randint(0, len(smiles)-1), "(O)")
+    elif rnd == 2 and not cyclic:
+        if random.randint(1, 2) == 1: # at front
+            smiles.insert(0, "OC(=O)")
+        else: # at back
+            smiles.append("C(=O)O")
+
+    smiles = "".join(smiles)
 
     # i have no idea how SMILES work
     if valid(smiles):
@@ -60,13 +66,14 @@ def iupac_name(smiles: str) -> str:
         if compounds[0].iupac_name is not None:
             return compounds[0].iupac_name.replace("(", "").replace(")", "") # to prevent something like dibromo(chloro)methane
         else:
+            # print(f"Failed: {smiles}")
             return None
     except PubChemPyError as e:
-        print(e)
+        # print(e)
         return None
 
 def valid(smiles: str):
-    return Chem.MolFromSmiles(smiles) is not None and iupac_name(smiles) is not None
+    return iupac_name(smiles) is not None and Chem.MolFromSmiles(smiles) is not None
 
 def generate_image(smiles: str) -> Image.Image:
     return Draw.MolToImage(Chem.MolFromSmiles(smiles))
@@ -81,17 +88,14 @@ def image_to_base64(image: Image.Image) -> str:
 def generate_base64_image(smiles: str) -> str:
     return image_to_base64(generate_image(smiles))
 
-class OrganicCompound:
-    def __init__(self):
-        self.smiles = random_smiles()
-        self.iupac = iupac_name(self.smiles)
-        self.img = generate_image(self.smiles)
-        self.img_base64 = image_to_base64(self.img)
-
 # DEBUG
 if __name__ == "__main__":
-    # compound = OrganicCompound()
-    # print(compound.smiles)
-    # print(compound.iupac)
-    # compound.img.show()
-    print(iupac_name("C(O)(O)C"))
+    ...
+
+    # print(iupac_name("C(O)(O)C"))
+
+    for _ in range(10):
+        smiles = random_smiles()
+        print(smiles, iupac_name(smiles))
+
+    # print(Chem.MolFromSmiles("idk"))

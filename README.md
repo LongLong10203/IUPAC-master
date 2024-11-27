@@ -32,11 +32,16 @@ Please do NOT attempt to cheat. Cheating deprives you of the opportunity to lear
 
 ## Update Patch
 - 24/11/2024: Demo release
-- 25/11/2024: Alpha version release
-    - Secured data transmission
-    - Added scoreboard page
+- 25/11/2024: Alpha v1 version release
+    - Secure data transmission
+    - Add scoreboard page
     - Set up database to store users' password and maximum scores
-    - Improved UI designs
-- 26/11/2024: Beta version release
+    - Improve UI designs
+- 26/11/2024: Alpha v2 version release
     - Bug fix
-- 27/11/2024: Official release
+- 27/11/2024: Beta v1 release
+    - Bug fix
+    - Improve user experience
+    - **Redesign the algorithm for generating organic compounds**
+
+### The website has not been officially released yet
