@@ -167,4 +167,4 @@ async def before_request():
         session["username"] = None
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=3016, debug=True)
+    app.run(host="0.0.0.0", port=3016, debug=False)

@@ -4,7 +4,7 @@ function reset() {
     document.getElementById("img").style.display = "none"
     document.getElementById("loader").style.display = "block"
     document.getElementById("answer").value = ""
-    document.getElementById("next").style.display = "none"
+    document.getElementById("next").innerText = "Save & Exit"
     document.getElementById("result").innerText = ""
     fetch("/random_compound")
         .then(response => response.json())
@@ -38,7 +38,7 @@ document.getElementById("answer").addEventListener("keydown", (event) => {
             .then(res => res.json())
             .then(data => {
                 document.getElementById("answer").disabled = true
-                document.getElementById("next").style.display = "block"
+                document.getElementById("next").innerText = "Next"
                 if (data.cheated) {
                     document.getElementById("result").innerHTML = "You cheated, right?"
                 } else if (data.correct) {
@@ -79,6 +79,9 @@ function next() {
 }
 
 document.getElementById("next").addEventListener("click", () => {
+    if (document.getElementById("next").innerText === "Save & Exit") {
+        incorrect = true
+    }
     next()
 })
 
