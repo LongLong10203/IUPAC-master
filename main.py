@@ -5,7 +5,7 @@ import bcrypt
 from prisma import Prisma
 
 import datetime
-from tzlocal import get_localzone
+import pytz
 
 app = Flask(__name__)
 app.secret_key = uuid4().hex
@@ -144,7 +144,7 @@ async def scoreboard():
         order={"max_score": "desc"}
     )
     await disconnect()
-    return render_template("/scoreboard.html", users=users, current_user=session["username"], timezone=get_localzone())
+    return render_template("/scoreboard.html", users=users, current_user=session["username"], timezone=pytz.timezone('Asia/Hong_Kong'))
 
 @app.route("/logout")
 def logout():
