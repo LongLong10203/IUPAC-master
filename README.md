@@ -43,5 +43,8 @@ Please do NOT attempt to cheat. Cheating deprives you of the opportunity to lear
     - Bug fix
     - Improve user experience
     - **Redesign the algorithm for generating organic compounds**
+- 29/11/2024
+    - Vulnerability fix to prevent cheating
+    - Update database schema to include created_at and updated_at column
 
 ### The website has not been officially released yet
