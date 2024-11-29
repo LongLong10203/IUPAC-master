@@ -3,6 +3,7 @@ from ext_chem import *
 from uuid import uuid4
 import bcrypt
 from prisma import Prisma
+from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = uuid4().hex
@@ -21,29 +22,29 @@ async def disconnect():
 
 @app.route("/")
 def home():
-    if request.cookies.get("logged_in") is None:
+    if not session["logged_in"]:
         return redirect("/login")
-    return render_template("home.html", username=request.cookies.get("username"))
+    
+    return render_template("home.html", username=session["username"])
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    if request.cookies.get("logged_in") is not None:
+    if session["logged_in"]:
         return redirect("/")
     
     if request.method == "POST":
         username = request.form.get("username")
-        response = make_response(redirect("/login/password"))
-        response.set_cookie("username", username)
-        return response
+        session["username"] = username
+        return redirect("/login/password")
     
     return render_template("/login.html")
 
 @app.route("/login/password", methods=["GET", "POST"])
 async def login_password():
-    if request.cookies.get("logged_in"):
+    if session["logged_in"]:
         return redirect("/")
     
-    username = request.cookies.get("username")
+    username = session["username"]
     if username is None: # user directly jumps to this page instead of going through the /login page
         return redirect("/login")
     
@@ -72,9 +73,8 @@ async def login_password():
             if not bcrypt.checkpw(password.encode("utf-8"), user.password.encode("utf-8")):
                 return render_template("/login_password.html", new=False, wrong_password=True)
 
-        response = make_response(redirect("/"))
-        response.set_cookie("logged_in", "true")
-        return response
+        session["logged_in"] = True
+        return redirect("/")
     
     return render_template("/login_password.html", new=(user is None))
 
@@ -104,21 +104,25 @@ def game():
 
 @app.route("/game/result")
 async def game_result():
-    username = request.cookies.get("username")
+    username = session["username"]
 
     await connect()
     user = await prisma.user.find_unique(
         where={"username": username}
     )
-    await disconnect()
     new_high_score = session["score"] > user.max_score
     if new_high_score:
         await connect()
         await prisma.user.update(
-            where={"username": username},
-            data={"max_score": session["score"]}
+            where={
+                "username": username
+            },
+            data={
+                "max_score": session["score"],
+                "updated_at": datetime.now()
+            }
         )
-        await disconnect()
+    await disconnect()
 
     return render_template("/result.html", new_high_score=new_high_score)
 
@@ -129,7 +133,7 @@ def random_compound():
     img_base64 = generate_base64_image(smiles)
     session["answer"] = iupac
     session["answered"] = False
-    return jsonify(smiles=smiles, iupac=iupac, img_base64=img_base64)
+    return jsonify(img_base64=img_base64)
 
 @app.route("/scoreboard")
 async def scoreboard():
@@ -138,23 +142,29 @@ async def scoreboard():
         order={"max_score": "desc"}
     )
     await disconnect()
-    return render_template("/scoreboard.html", users=users, current_user=request.cookies.get("username"))
+    return render_template("/scoreboard.html", users=users, current_user=session["username"])
 
 @app.route("/logout")
 def logout():
-    response = make_response(redirect("/login"))
-    response.delete_cookie("username")
-    response.delete_cookie("logged_in")
-    return response
+    session["logged_in"] = False
+    session["username"] = None
+    return redirect("/login")
 
 @app.route("/account/delete")
 async def delete_account():
     await connect()
     await prisma.user.delete(
-        where={"username": request.cookies.get("username")}
+        where={"username": session["username"]}
     )
     await disconnect()
     return make_response(redirect("/logout"))
 
+@app.before_request
+async def before_request():
+    if session.get("logged_in") is None:
+        session["logged_in"] = False
+    if session.get("username") is None:
+        session["username"] = None
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=3016, debug=False)
+    app.run(host="0.0.0.0", port=3016, debug=True)

@@ -30,7 +30,7 @@ def random_smiles() -> str:
             # extract the selected atoms
             first = smiles.pop(pos)
             second = smiles.pop(pos)
-            # insert alkene group at random places
+            # insert alkene group at selected place
             smiles.insert(pos, f"{first}={second}")
 
     # 0 ~ 4, normal distribution

@@ -4,7 +4,7 @@ A website that helps you learn [IUPAC naming](https://en.wikipedia.org/wiki/IUPA
 
 ## How to Play
 1. Click on the [link](https://iupac-master.xagentx.link).
-2. Enter your name and password, the website will automatically log you in by [cookies](https://en.wikipedia.org/wiki/HTTP_cookie).
+2. Enter your name and password, the website will automatically log you in.
 3. Click the `NEW GAME` button.
 4. A random organic compound will be generated. Enter the IUPAC name of the compound. Submit by pressing `Enter`.
 5. Click `Next` to continue. If you get it right, your score will be increased. If you get it wrong, you will be redirected to the result page.
