@@ -3,7 +3,7 @@ from ext_chem import *
 from uuid import uuid4
 import bcrypt
 from prisma import Prisma
-from datetime import datetime
+from datetime import datetime, timezone
 
 app = Flask(__name__)
 app.secret_key = uuid4().hex
@@ -119,7 +119,7 @@ async def game_result():
             },
             data={
                 "max_score": session["score"],
-                "updated_at": datetime.now()
+                "updated_at": datetime.now(timezone.utc)
             }
         )
     await disconnect()
