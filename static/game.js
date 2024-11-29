@@ -81,7 +81,7 @@ function next() {
             if (valid) {
                 window.location.href = "/game/result"
             } else {
-                alert("You cheated, right?")
+                alert("An error occurred... Please try again.")
                 window.location.href = "/"
             }
         })

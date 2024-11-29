@@ -455,3 +455,8 @@
     transform: rotate(-1turn);
   }
 }
+
+#buttons {
+  display: flex;
+  flex-direction: row;
+}

@@ -3,7 +3,9 @@ from ext_chem import *
 from uuid import uuid4
 import bcrypt
 from prisma import Prisma
-from datetime import datetime, timezone
+
+import datetime
+from tzlocal import get_localzone
 
 app = Flask(__name__)
 app.secret_key = uuid4().hex
@@ -119,7 +121,7 @@ async def game_result():
             },
             data={
                 "max_score": session["score"],
-                "updated_at": datetime.now(timezone.utc)
+                "updated_at": datetime.datetime.now(datetime.timezone.utc)
             }
         )
     await disconnect()
@@ -142,7 +144,7 @@ async def scoreboard():
         order={"max_score": "desc"}
     )
     await disconnect()
-    return render_template("/scoreboard.html", users=users, current_user=session["username"])
+    return render_template("/scoreboard.html", users=users, current_user=session["username"], timezone=get_localzone())
 
 @app.route("/logout")
 def logout():
@@ -161,10 +163,13 @@ async def delete_account():
 
 @app.before_request
 async def before_request():
-    if session.get("logged_in") is None:
-        session["logged_in"] = False
     if session.get("username") is None:
         session["username"] = None
+    if session.get("logged_in") is None:
+        session["logged_in"] = False
+    # idk codeium suggests this to me i hope it works
+    if request.endpoint and request.endpoint != "static" and not session["logged_in"] and request.path != "/login" and request.path != "/login/password":
+        return redirect("/login")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=3016, debug=False)
