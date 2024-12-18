@@ -47,5 +47,9 @@ Please do NOT attempt to cheat. Cheating deprives you of the opportunity to lear
     - Vulnerability fix to prevent cheating
     - Update database schema to include created_at and updated_at column
     - Add "Save & Exit" button to the game page
+- 18/12/2024: Beta v3 release
+    - Remove Submit button and "Save & Exit" buttons for simplicity
+    - Add auto focus on username and password input fields
+    - Add difficulty selection page but hard difficulty has not been implemented yet 
 
 ### The website has not been officially released yet
