@@ -27,6 +27,8 @@ def home():
     if not session["logged_in"]:
         return redirect("/login")
     
+    session["difficulty"] = None
+    
     return render_template("home.html", username=session["username"])
 
 @app.route("/login", methods=["GET", "POST"])
@@ -80,6 +82,23 @@ async def login_password():
     
     return render_template("/login_password.html", new=(user is None))
 
+@app.route("/game/choose-difficulty", methods=["GET", "POST"])
+def choose_difficulty():
+    if session["difficulty"] is not None:
+        return redirect(f"/game")
+
+    if request.method == "POST":
+        difficulty = request.form.get("difficulty")
+        session["difficulty"] = difficulty
+        return redirect(f"/game")
+    
+    return render_template("/choose-difficulty.html")
+
+# ! delete this after hard difficulty has been implemented
+@app.route("/game/difficulty")
+def get_difficulty():
+    return jsonify(difficulty=session["difficulty"])
+
 @app.route("/game/getscore")
 def get_score():
     return jsonify(score=session["score"])
@@ -130,7 +149,12 @@ async def game_result():
 
 @app.route("/random_compound")
 def random_compound():
-    smiles = random_smiles()
+    if session["difficulty"] == "easy":
+        smiles = random_smiles_easy()
+    elif session["difficulty"] == "hard":
+        # TODO: uncomment
+        # smiles = random_smiles_hard()
+        smiles = random_smiles_easy()
     iupac = iupac_name(smiles)
     img_base64 = generate_base64_image(smiles)
     session["answer"] = iupac

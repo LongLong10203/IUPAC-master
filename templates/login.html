@@ -32,8 +32,14 @@
                 class="input__search"
                 placeholder="Enter username"
                 required
+                id="username"
             />
             </div>
         </form>
+        <script>
+            window.addEventListener("DOMContentLoaded", () => {
+                document.getElementById("username").focus();
+            })
+        </script>
     </body>
 </html>

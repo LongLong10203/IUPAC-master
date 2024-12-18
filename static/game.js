@@ -4,8 +4,6 @@ function reset() {
     document.getElementById("img").style.display = "none"
     document.getElementById("loader").style.display = "block"
     document.getElementById("answer").value = ""
-    document.getElementById("submit").style.display = "block"
-    document.getElementById("save-and-exit").style.display = "block"
     document.getElementById("next").style.display = "none"
     document.getElementById("result").innerText = ""
     fetch("/random_compound")
@@ -30,20 +28,32 @@ function update() {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
+    fetch("/game/difficulty")
+        .then(res => res.json())
+        .then(data => {
+            if (data.difficulty == "hard") {
+                alert("Hard difficulty has not been implemented yet. Easy difficulty is switched.")
+            }
+        })
     reset()
     update()
 })
 
 function check_ans() {
-    fetch(`/game/check/${document.getElementById("answer").value.trim().toLowerCase()}`)
+    const value = document.getElementById("answer").value.trim().toLowerCase()
+    if (value === "") {
+        if (confirm("Are you sure you want to quit?")) {
+            window.location.href = "/game/result";
+        }
+        return
+    }
+    fetch(`/game/check/${value}`)
         .then(res => res.json())
         .then(data => {
             document.getElementById("answer").disabled = true
-            document.getElementById("submit").style.display = "none"
-            document.getElementById("save-and-exit").style.display = "none"
             document.getElementById("next").style.display = "block"
             if (data.cheated) {
-                document.getElementById("result").innerHTML = "You cheated, right?"
+                document.getElementById("result").innerHTML = "An error occurred... Please try again."
             } else if (data.correct) {
                 document.getElementById("result").innerHTML = "Correct!"
                 ++score
@@ -60,10 +70,6 @@ document.getElementById("answer").addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
         check_ans()
     }
-})
-
-document.getElementById("submit").addEventListener("click", () => {
-    check_ans()
 })
 
 function validscore() {
@@ -89,13 +95,6 @@ function next() {
         reset()
     }
 }
-
-document.getElementById("save-and-exit").addEventListener("click", () => {
-    if (confirm("Are you sure you want to save and exit?")) {
-        incorrect = true
-        next()
-    }
-})
 
 document.getElementById("next").addEventListener("click", () => {
     next()

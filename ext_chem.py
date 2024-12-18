@@ -7,7 +7,7 @@ import io
 import base64
 from PIL import Image
 
-def random_smiles() -> str:
+def random_smiles_easy() -> str:
     # meth ~ oct, normal distribution
     longest_carbon_chain = random.choices([i for i in range(1, 9)], weights=[min([i, 8 - i, 3]) for i in range(1, 9)])[0]
     smiles = ["C"] * longest_carbon_chain
@@ -58,7 +58,11 @@ def random_smiles() -> str:
     if valid(smiles):
         return smiles
     else:
-        return random_smiles()
+        return random_smiles_easy()
+
+# TODO
+def random_smiles_hard() -> str:
+    ...
 
 def iupac_name(smiles: str) -> str:
     try:
@@ -92,10 +96,4 @@ def generate_base64_image(smiles: str) -> str:
 if __name__ == "__main__":
     ...
 
-    # print(iupac_name("C(O)(O)C"))
-
-    for _ in range(10):
-        smiles = random_smiles()
-        print(smiles, iupac_name(smiles))
-
-    # print(Chem.MolFromSmiles("idk"))
+    print(iupac_name("C(=O)C"))

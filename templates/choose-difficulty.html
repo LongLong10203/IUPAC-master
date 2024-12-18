@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>IUPAC Master</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='choose-difficulty.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='general.css') }}">
+    </head>
+    <body>
+    <div class="box">Choose Difficulty</div>
+    <form method="post" action="/game/choose-difficulty">
+        <!-- https://uiverse.io/Na3ar-17/fast-turtle-85 -->
+        <div class="radio-input">
+            <label class="label">
+                <input
+                    type="radio"
+                    id="easy"
+                    checked=""
+                    name="difficulty"
+                    value="easy"
+                />
+                <p class="text">Easy</p>
+            </label>
+            <label class="label">
+                <input type="radio" id="hard" name="difficulty" value="hard" />
+                <p class="text">Hard</p>
+            </label>
+        </div>
+        <div class="buttons">
+            <button aria-label="New game" class="buttons" type="submit">
+                <p data-start="good luck!" data-text="start!" data-title="new game"></p>
+            </button>
+        </div>
+    </form>
+
+    </body>
+</html>
