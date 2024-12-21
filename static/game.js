@@ -28,13 +28,6 @@ function update() {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-    fetch("/game/difficulty")
-        .then(res => res.json())
-        .then(data => {
-            if (data.difficulty == "hard") {
-                alert("Hard difficulty has not been implemented yet. Easy difficulty is switched.")
-            }
-        })
     reset()
     update()
 })

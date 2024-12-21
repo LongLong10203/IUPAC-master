@@ -5,7 +5,7 @@ A website that helps you learn [IUPAC naming](https://en.wikipedia.org/wiki/IUPA
 ## How to Play
 1. Click on the [link](https://iupac-master.xagentx.link).
 2. Enter your name and password, the website will automatically log you in.
-3. Click the `NEW GAME` button.
+3. Click the `NEW GAME` button. Choose the difficulty.
 4. A random organic compound will be generated. Enter the IUPAC name of the compound. Submit by pressing `Enter`.
 5. Click `Next` to continue. If you get it right, your score will be increased. If you get it wrong, you will be redirected to the result page.
 6. Compete with your friends and see who can get the highest score!
@@ -51,5 +51,7 @@ Please do NOT attempt to cheat. Cheating deprives you of the opportunity to lear
     - Remove Submit button and "Save & Exit" buttons for simplicity
     - Add auto focus on username and password input fields
     - Add difficulty selection page but hard difficulty has not been implemented yet 
+- 22/12/2024: Beta v4 release
+    - **Implement hard difficulty (Beta)**
 
 ### The website has not been officially released yet

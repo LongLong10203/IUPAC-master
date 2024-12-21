@@ -94,11 +94,6 @@ def choose_difficulty():
     
     return render_template("/choose-difficulty.html")
 
-# ! delete this after hard difficulty has been implemented
-@app.route("/game/difficulty")
-def get_difficulty():
-    return jsonify(difficulty=session["difficulty"])
-
 @app.route("/game/getscore")
 def get_score():
     return jsonify(score=session["score"])
@@ -152,13 +147,12 @@ def random_compound():
     if session["difficulty"] == "easy":
         smiles = random_smiles_easy()
     elif session["difficulty"] == "hard":
-        # TODO: uncomment
-        # smiles = random_smiles_hard()
-        smiles = random_smiles_easy()
+        smiles = random_smiles_hard()
     iupac = iupac_name(smiles)
     img_base64 = generate_base64_image(smiles)
     session["answer"] = iupac
     session["answered"] = False
+    # print(iupac)
     return jsonify(img_base64=img_base64)
 
 @app.route("/scoreboard")
