@@ -7,6 +7,13 @@ import io
 import base64
 from PIL import Image
 
+# for debug
+from colorama import init, Fore, Style
+init()
+red = lambda txt: Fore.RED + txt + Style.RESET_ALL
+blue = lambda txt: Fore.BLUE + txt + Style.RESET_ALL
+green = lambda txt: Fore.GREEN + txt + Style.RESET_ALL
+
 def general_append(smiles: list[str], longest_carbon_chain: int) -> None:
     # alkene (at least 2 C atoms) 1/3 probability to include
     if longest_carbon_chain >= 2 and random.randint(1, 3) == 1:
@@ -14,7 +21,7 @@ def general_append(smiles: list[str], longest_carbon_chain: int) -> None:
         for _ in range(no_of_alkenes):
             pos = random.randint(0, len(smiles)-2)
             # check invalid, also lower the probability of more alkenes
-            if smiles[pos] == "=" or smiles[pos+1] == "=":
+            if smiles[pos] == "C=C" or smiles[pos+1] == "C=C": # to avoid cumulene (consecutive double bonds)
                 continue
             # extract the selected atoms
             first = smiles.pop(pos)
@@ -33,8 +40,8 @@ def general_append(smiles: list[str], longest_carbon_chain: int) -> None:
         smiles.insert(pos, f"({substituent})")
 
 def random_smiles_easy() -> str:
-    # meth ~ oct, normal distribution
-    longest_carbon_chain = random.choices([i for i in range(1, 9)], weights=[min([i, 8 - i, 3]) for i in range(1, 9)])[0]
+    # meth ~ oct, normal distribution, max = 3
+    longest_carbon_chain = random.choices([i for i in range(1, 9)], weights=[min([i, 9 - i, 3]) for i in range(1, 9)])[0]
     smiles = ["C"] * longest_carbon_chain
 
     cyclic = False
@@ -66,9 +73,21 @@ def random_smiles_easy() -> str:
         return random_smiles_easy()
 
 def random_smiles_hard() -> str:
-    # meth ~ oct, normal distribution
-    longest_carbon_chain = random.choices([i for i in range(1, 9)], weights=[min([i, 8 - i, 3]) for i in range(1, 9)])[0]
+    # meth ~ oct, distribution prone to more carbons, no limit/max
+    longest_carbon_chain = random.choices([i for i in range(1, 9)], weights=[min([i, 11 - i]) for i in range(1, 9)])[0]
     smiles = ["C"] * longest_carbon_chain
+
+    # alkene 2/3 probability to include
+    if longest_carbon_chain >= 2 and random.randint(1, 3) in (1, 2):
+        # print(blue("Alkene:"))
+        no_of_alkenes = random.randint(1, min(2, longest_carbon_chain-1)) # at most 2 alkenes
+        for _ in range(no_of_alkenes):
+            pos = random.randint(0, len(smiles)-2)
+            if smiles[pos] == "C=C" or smiles[pos+1] == "C=C": # to avoid cumulene (consecutive double bonds)
+                continue
+            first = smiles.pop(pos)
+            second = smiles.pop(pos)
+            smiles.insert(pos, f"{first}={second}")
 
     if longest_carbon_chain > 2 and len(smiles) > 2:
         rnd = random.randint(1, 4)
@@ -77,32 +96,43 @@ def random_smiles_hard() -> str:
     # print(rnd)
     
     if rnd == 1: # aldehyde
+        if smiles[0] == "C=C": # to avoid O=C=C, which is invalid
+            # break the double bond
+            smiles.pop(0)
+            smiles = ["C", "C"] + smiles
         smiles.insert(0, "O=") # front
-        if random.randint(1, 2) == 1: # back
+        if random.randint(1, 2) == 1: # 1/2 probability at the back
+            if smiles[-1] == "C=C": # same logic
+                smiles.pop()
+                smiles = smiles + ["C", "C"]
             smiles.insert(len(smiles), "=O")
     
     elif rnd == 2: # amide
         smiles.pop()
         smiles.insert(0, "O=C(N)") # front
-        if random.randint(1, 2) == 1: # back
+        if random.randint(1, 2) == 1: # 1/2 probability at the back
             smiles.insert(len(smiles), "(=O)N")
     
     else:
         # easier to draw less number of functional groups
-        no_of_func_grps = random.choices([i for i in range(1, 4)], weights=[4 - i for i in range(1, 4)])[0]
+        no_of_func_grps = random.choices([1, 2, 3], weights=[3, 2, 1])[0]
 
         for _ in range(no_of_func_grps):
             if rnd == 3: # amine
                 smiles.insert(random.randint(1, len(smiles)), "(N)")
             elif rnd == 4: # ketone
-                smiles.insert(random.randint(2, len(smiles)-1), "(=O)")
+                for _ in range(20): # run some time to avoid infinite loop, in case no valid position can be found
+                    pos = random.randint(2, len(smiles)-1)
+                    if smiles[pos-1] != "(=O)" and smiles[pos] != "(=O)": # avoid double ketone sticking to each other
+                        break
+                smiles.insert(pos, "(=O)")
 
     smiles = "".join(smiles)
 
     if valid(smiles):
         return smiles
     else:
-        # print("Invalid:", rnd, smiles)
+        # print(red(f"Invalid: {rnd = }, {smiles = }"))
         return random_smiles_hard()
 
 def iupac_name(smiles: str) -> str:

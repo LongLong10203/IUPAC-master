@@ -53,5 +53,9 @@ Please do NOT attempt to cheat. Cheating deprives you of the opportunity to lear
     - Add difficulty selection page but hard difficulty has not been implemented yet 
 - 22/12/2024: Beta v4 release
     - **Implement hard difficulty (Beta)**
+- 23/12/2023: Beta v5 release
+    - **Update algorithm** for hard difficulty to:
+        - add alkene group
+        - avoid invalid and out-syl compounds
 
 ### The website has not been officially released yet

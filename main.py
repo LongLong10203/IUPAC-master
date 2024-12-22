@@ -152,7 +152,7 @@ def random_compound():
     img_base64 = generate_base64_image(smiles)
     session["answer"] = iupac
     session["answered"] = False
-    # print(iupac)
+    # print(iupac) # TODO
     return jsonify(img_base64=img_base64)
 
 @app.route("/scoreboard")
