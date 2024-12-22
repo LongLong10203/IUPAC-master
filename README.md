@@ -10,6 +10,27 @@ A website that helps you learn [IUPAC naming](https://en.wikipedia.org/wiki/IUPA
 5. Click `Next` to continue. If you get it right, your score will be increased. If you get it wrong, you will be redirected to the result page.
 6. Compete with your friends and see who can get the highest score!
 
+## Instructions
+- It may take some time to load the compound, please be patient. Report to us if the compound cannot be loaded.
+- Difference between easy and hard difficulty:
+    - Easy difficulty includes:
+        - alkane functional group
+        - alkene functional group
+        - hydroxyl functional group
+        - carboxyl functional group
+        - at most **3** substituent
+        - **cyclic** property
+    - Hard difficulty includes:
+        - alkane functional group (would not stand alone)
+        - alkene functional group (would not stand alone)
+        - aldehyde functional group
+        - ketone functional group
+        - amide functional group
+        - amine functional group
+        - at most **2** substituent
+- The scoreboard database is subject to change before official release. Please do not be surprised if you cannot find your name on the scoreboard one day.
+- Raise an issue if you have found any bugs or want to suggest a new feature.
+
 ## Important Note
 Please do NOT attempt to cheat. Cheating deprives you of the opportunity to learn and understand IUPAC naming, which is the goal of this game. Let's play fair and have fun!
 
@@ -22,10 +43,11 @@ Please do NOT attempt to cheat. Cheating deprives you of the opportunity to lear
 - **[PostgreSQL](https://www.postgresql.org/):** A robust, open-source object-relational database system, compatible with Prisma for database management.
 
 ## Special Thanks to
-- Ms. Cheung for teaching me chemistry (although I'm failing).
+- Ms. Cheung for teaching me chemistry (although I'm not good at it).
 - My friend [Jay](https://github.com/Agent-01) for hosting the website with his server.
 - [Coolify](https://coolify.io/) for the cloud service.
 - [UIverse](https://uiverse.io/) for the wonderful UI designs.
+- [ChatGPT](https://chatgpt.com/) for resolving some of my questions.
 
 ## License
 [MIT License](https://en.wikipedia.org/wiki/MIT_License)
@@ -57,5 +79,7 @@ Please do NOT attempt to cheat. Cheating deprives you of the opportunity to lear
     - **Update algorithm** for hard difficulty to:
         - add alkene group
         - avoid invalid and out-syl compounds
+
+---
 
 ### The website has not been officially released yet
